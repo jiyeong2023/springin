@@ -27,13 +27,14 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.IllegalStateException
 
-@Service
-class CourseServiceImpl(
-    private val courseRepository: CourseRepository,
+@Service  // 콜스 서비스 구현문서  할일적어놓을때 TODO 사용하는것 권유,
+class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준다. 빌드에서 인푸트 스프링부트 설정, 고래? 돌리기. 데이터저장소와 연결되야 트랙센션사용함.
+    private val courseRepository: CourseRepository,//테스트 위해 임의로 h2 빌드에 적용하면 사용가능함.(트래센션)
     private val lectureRepository: LectureRepository,
     private val courseApplicationRepository: CourseApplicationRepository,
     private val userRepository: UserRepository,
-) : CourseService {
+) //
+    : CourseService {
     override fun getAllCourseList(): List<CourseResponse> {
         return courseRepository.findAll().map { it.toResponse() }
     }
@@ -71,7 +72,7 @@ class CourseServiceImpl(
         courseRepository.delete(course)
     }
 
-    @Transactional
+    @Transactional //트랙색션 어노테이션: 성공하지 못했을시 롤백을 한다. 성공시 앱종료되도 DB에 저장한다.
     override fun addLecture(courseId: Long, request: AddLectureRequest): LectureResponse {
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
 

@@ -10,7 +10,7 @@ import com.teamsparta.courseregistration.domain.lecture.dto.AddLectureRequest
 import com.teamsparta.courseregistration.domain.lecture.dto.LectureResponse
 import com.teamsparta.courseregistration.domain.lecture.dto.UpdateLectureRequest
 
-interface CourseService {
+interface CourseService { //
 
     fun getAllCourseList(): List<CourseResponse>
 
@@ -19,6 +19,7 @@ interface CourseService {
     fun createCourse(request: CreateCourseRequest) : CourseResponse
 
     fun updateCourse(courseId: Long, request: UpdateCourseRequest): CourseResponse
+    //컨트롤러에서 @붙여서 받은 인자들을 서비스에서도 동일하게 인자로 받는다.
 
     fun deleteCourse(courseId: Long)
 

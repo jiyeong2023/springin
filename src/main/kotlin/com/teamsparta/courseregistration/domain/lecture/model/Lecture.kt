@@ -4,7 +4,7 @@ import com.teamsparta.courseregistration.domain.course.model.Course
 import com.teamsparta.courseregistration.domain.lecture.dto.LectureResponse
 import jakarta.persistence.*
 
-@Entity
+@Entity //엔티티 어노테이션 선언
 @Table(name = "lecture")
 class Lecture(
     @Column(name = "title", nullable = false)

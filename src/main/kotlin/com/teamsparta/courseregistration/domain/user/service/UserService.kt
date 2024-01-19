@@ -4,7 +4,7 @@ import com.teamsparta.courseregistration.domain.user.dto.SignUpRequest
 import com.teamsparta.courseregistration.domain.user.dto.UpdateUserProfileRequest
 import com.teamsparta.courseregistration.domain.user.dto.UserResponse
 
-interface UserService {
+interface UserService { //
 
     fun signup(request: SignUpRequest): UserResponse
 

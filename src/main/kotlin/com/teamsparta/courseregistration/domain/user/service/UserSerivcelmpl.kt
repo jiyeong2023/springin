@@ -13,8 +13,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-@Service
-class userServiceImpl(
+@Service //스프링에서 찾을수 있도록 서비스 어노테이션 붙여준다
+class userServiceImpl( //
     private val userRepository: UserRepository
 ): UserService {
 

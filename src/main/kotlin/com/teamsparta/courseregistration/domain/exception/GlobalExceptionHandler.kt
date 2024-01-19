@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 
 @RestControllerAdvice
-class GlobalExceptionHandler {
+class GlobalExceptionHandler { //모든 예외상황 코드 작성, 관리하도록 한다.
 
     @ExceptionHandler(ModelNotFoundException::class)
-    fun headleModelNotFoundException(e: ModelNotFoundException): ResponseEntity<ErrorResponse> {
+    fun headleModelNotFoundException(e: ModelNotFoundException): ResponseEntity<ErrorResponse> {//리스폰스엔티티<dto입력>
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(ErrorResponse( e.message, ""))

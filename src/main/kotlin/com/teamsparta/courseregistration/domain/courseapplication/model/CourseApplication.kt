@@ -7,8 +7,8 @@ import com.teamsparta.courseregistration.domain.user.model.User
 import com.teamsparta.courseregistration.domain.user.model.toResponse
 import jakarta.persistence.*
 
-@Entity
-@Table(name = "course_application")
+@Entity//엔티티 선언함.
+@Table(name = "course_application") //@테이블 (이름= "테이블이름")
 class CourseApplication(
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -22,7 +22,7 @@ class CourseApplication(
     @JoinColumn(name = "user_id", nullable = false)
     val user: User
 ) {
-    @Id
+    @Id //아이디 관련 내용 작성. 이 작성후 다른데서 Id 관련 내용 작성안함.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 

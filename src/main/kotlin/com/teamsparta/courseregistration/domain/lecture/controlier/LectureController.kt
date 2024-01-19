@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RequestMapping("/courses/{courseid}/lectures")
 @RestController
-class LectureController (
+class LectureController ( //콜스 서비스 주입받음. 반환함.
     private val courseService: CourseService
 ){
 
@@ -30,7 +30,9 @@ class LectureController (
      }
 
     @GetMapping("/{lectureId}")
-     fun getLecture(@PathVariable courseId: Long, @PathVariable lectureId: Long): ResponseEntity<LectureResponse>{
+     fun getLecture(@PathVariable courseId: Long, @PathVariable lectureId: Long): ResponseEntity<LectureResponse>
+     //()파라미터 안에 왜 @PathVariable이 두번 들어간 이유: 테이블 연관관계따라서 id를 두개 받은걸까?
+     {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(courseService.getLecture(courseId, lectureId))
@@ -40,7 +42,8 @@ class LectureController (
     fun addLecture(
         @PathVariable courseId: Long,
         @RequestBody addLectureRequest: AddLectureRequest
-    ) : ResponseEntity<LectureResponse>{
+    ) //렉쳐가 어떤 데이터로 생성이 됬는지, 리스폰스로 보내야 되니까 ResponseEntity에 리스폰스 타입을 지정해서 리턴을 해줍니다.
+    : ResponseEntity<LectureResponse>{
          return ResponseEntity
              .status(HttpStatus.OK)
              .body(courseService.addLecture(courseId, addLectureRequest))

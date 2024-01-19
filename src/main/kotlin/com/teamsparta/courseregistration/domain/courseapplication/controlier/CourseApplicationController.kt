@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/course/{courseId}/appliations")
 
     @RestController
-    class CourseApplicationController(
+    class CourseApplicationController( //콜스서비스 주입
         private val courseService: CourseService
     ) {
 
@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.RestController
                 .body(courseService.getCourseApplication(courseId, applicationId))
         }
 
-        @PatchMapping("/{applicationId}")
+        @PatchMapping("/{applicationId}")//어플리케이션 상태변경.
         fun updateApplicationStatus(
             @PathVariable courseId: Long,
             @PathVariable applicationId: Long,
