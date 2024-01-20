@@ -19,8 +19,8 @@ class CourseApplication(
     val course: Course,
 
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    val user: User
+    @JoinColumn(name = "user_id", nullable = false) //양뱡향 매핑,
+    val user: User //유저: 유저시 강한결합이 될 수 있어 상황에 따라 id로 적기도 합니다.
 ) {
     @Id //아이디 관련 내용 작성. 이 작성후 다른데서 Id 관련 내용 작성안함.
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -22,7 +22,7 @@ class userServiceImpl( //
     override fun signUp(request: SignUpRequest): UserResponse {
         if (userRepository.existsByEmail(request.email)) {
             throw IllegalStateException("Email is already in use")
-        }
+        }//이메일이 존재하면 예외 던지고,???
 
         return userRepository.save(
             User(
@@ -31,7 +31,7 @@ class userServiceImpl( //
                 password = request.password,
                 profile = Profile(
                     nickname = request.nickname
-                ),
+                ), //역할에 따라서
                 role = when (request.role) {
                     UserRole.STUDENT.name -> UserRole.STUDENT
                     UserRole.TUTOR.name -> UserRole.TUTOR
@@ -50,5 +50,5 @@ class userServiceImpl( //
 
         return userRepository.save(user).toResponse()
     }
-
+//튜터님이 뭐라고 설명하는데 모르겠다....
 }

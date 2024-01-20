@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 // 튜터는dtos-컨트롤러 먼저 작성합(crud). 콜스, 렉쳐, 어플리케이션 ,유저 순서로 디티오들과 컨트롤러 작성함.(여기까지 웹레이어), 다음에 서비스레이어 작성함.
 // 콜스 서비스,서비스 임플 조금 작성후 예외처리 작성함. 후에 트랙센셕 적용. 서비스임플 작성,DB 작성과 인텔리제이, 어플연결, JPA 설명,
 // 모델-엔티티 콜스, 렉쳐,유저,어플리케이션 작성.
-// 마지막으로 레포지토리작성, 모둘 파일작성.
+// 마지막으로 레포지토리작성, (jpa Repository 문서 참고하기)
 //DB 테이블 작성방법,
 class CourseController(//생성자 주입, 콜스 서비스 주입, 받음.
     private val courseService: CourseService

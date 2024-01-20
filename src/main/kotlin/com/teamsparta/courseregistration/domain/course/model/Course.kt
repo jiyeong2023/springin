@@ -31,9 +31,11 @@ class Course(//엔티티 매니저: 엔티티를 관리하는 역할. 여려종�
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var lectures: MutableList<Lecture> = mutableListOf(), //미터블리스트- 자료가 변할수 있을때 사용한다. 메트바이는 연관관계아닌쪽에 표시함
-    //뱃지= 뱃지타입.성능항상 위해 레이지(지연로딩).
+    //뱃지= 뱃지타입.성능항상 위해 레이지(지연로딩). 실무에서는 주로 CascadeType.ALL , CascadeType.Persist를 많이 사용한다. 코틀린에서는
+    //어레이형태 [CascadeType.ALL]로 써야한다.
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    //orphanRemoval 옵션을 쓰면 고아관계(부모자식 끊어진 spl 삭제가 가능하다. 나가는 쿼리 보는것 권유?
     var courseApplications: MutableList<CourseApplication> = mutableListOf()
 ) {
     @Id

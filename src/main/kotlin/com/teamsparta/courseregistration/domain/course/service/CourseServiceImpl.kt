@@ -37,7 +37,8 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
     : CourseService {
     override fun getAllCourseList(): List<CourseResponse> {
         return courseRepository.findAll().map { it.toResponse() }
-    }
+    } //콜스 리스트 가져오는 함수: 파인더올이 있다. 콜스 전체를 가져오는 거기때문에 파인더올로 가져오고, 맵이라는 함수를 통해서, 각각의 투리스폰스를
+    //활용해서 최종적으로 리스트의 콜스리스폰트로 변환한다. 그렇게 보시면 될 것 같고,
 
     override fun getCourseById(courseId: Long): CourseResponse {
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
@@ -53,7 +54,8 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
                 status = CourseStatus.OPEN,
             )
         ).toResponse()
-    }
+    }//크리에이콜스도 세이브 하면 콜스가 저장이 되고, 저장이 되면 리턴으로 콜스 자체에 내용이 담겨서 나온다고 볼 수 있어요. 리턴하고 세이브. 콜스 내용후, 투리스폰스로
+    //변환을 해주면 됩니다.
 
     @Transactional
     override fun updateCourse(courseId: Long, request: UpdateCourseRequest): CourseResponse {
@@ -64,7 +66,7 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
         course.description = description
 
         return courseRepository.save(course).toResponse()
-    }
+    } //업데이트 경우에는 먼저 콜스를 가져오고, 타이트 다스크리션을 리퀘스트로부터 보내고 한다음에
 
     @Transactional
     override fun deleteCourse(courseId: Long) {
@@ -87,10 +89,10 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
         courseRepository.save(course)
         return lecture.toResponse()
     }
-
-    override fun getLecture(courseId: Long, lectureId: Long): LectureResponse {
+//
+    override fun getLecture(courseId: Long, lectureId: Long): LectureResponse {//콜스아이디와 렉쳐아이디 기반으로 다 가져오고,
         val lecture = lectureRepository.findByCourseIdAndId(courseId, lectureId)
-            ?: throw ModelNotFoundException("Lecture", lectureId)
+            ?: throw ModelNotFoundException("Lecture", lectureId)//해당코스아이디 렉쳐아아디 조회하기에 렉쳐를 가져왔습니다??
 
         return lecture.toResponse()
     }
@@ -98,7 +100,7 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
     override fun getLectureList(courseId: Long): List<LectureResponse> {
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
         return course.lectures.map { it.toResponse() }
-    }
+    }//코스아이디 렉쳐아이디 기반으로 다 가져와서 파인드로 다 찾아 비교를 합니다.
 
     @Transactional
     override fun updateLecture(
@@ -106,8 +108,8 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
         lectureId: Long,
         request: UpdateLectureRequest
     ): LectureResponse {
-        val lecture = lectureRepository.findByCourseIdAndId(courseId, lectureId)
-            ?: throw ModelNotFoundException("Lecture", lectureId)
+        val lecture = lectureRepository.findByCourseIdAndId(courseId, lectureId)//코스아이디와 렉쳐아이디 기반으로 조회한다음에
+            ?: throw ModelNotFoundException("Lecture", lectureId) //업데이트를 합니다??
 
         val (title, videoUrl) = request
         lecture.title = title
@@ -125,7 +127,7 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
         course.removeLecture(lecture)
 
         // Lecture에 영속성을 전파
-        courseRepository.save(course)
+        courseRepository.save(course)//렉쳐를 콜스 어그리먼트에서 관리한다고 보여주기위해??
     }
 
     @Transactional
@@ -133,7 +135,7 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
         val user = userRepository.findByIdOrNull(request.userId)
             ?: throw ModelNotFoundException("User", request.userId)
-
+//먼저 콜스를 가져오고, 리퀘스트에서
         // Course 마감여부 체크
         if (course.isClosed()) {
             throw IllegalStateException("Course is already closed. courseId: $courseId")
@@ -143,7 +145,7 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
         if (courseApplicationRepository.existsByCourseIdAndUserId(courseId, request.userId)) {
             throw IllegalStateException("Already applied. courseId: $courseId, userId: ${request.userId}")
         }
-
+//마지막으로 예외처리등 체크후에 어플리케이션을 작성합니다. 엔티티에 스테이스를 팬딩으로 줬기때문에 명시하지 않았습니다?
         val courseApplication = CourseApplication(
             course = course,
             user = user,
@@ -167,7 +169,7 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
 
         return course.courseApplications.map { it.toResponse() }
     }
-
+//튜터님 설명 모르겠어요....
     @Transactional
     override fun updateCourseApplicationStatus(
         courseId: Long,
@@ -198,9 +200,9 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
                 course.addApplicant()
                 // 만약 신청 인원이 꽉 찬다면 마감 처리
                 if (course.isFull()) {
-                    course.close()
+                    course.close()//정책상 코드가 필요함.
                 }
-                courseRepository.save(course)
+                courseRepository.save(course) //가독성과 캡슐화를 위해?
             }
 
             // 거절 일때
