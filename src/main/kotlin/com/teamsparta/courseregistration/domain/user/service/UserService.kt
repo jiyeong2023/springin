@@ -9,4 +9,6 @@ interface UserService { //
     fun signup(request: SignUpRequest): UserResponse
 
     fun updateUserProfile(userId: Long, request: UpdateUserProfileRequest) :UserResponse
+
+    fun login(loginRequest: LoginRequest): LoginResponse
 }

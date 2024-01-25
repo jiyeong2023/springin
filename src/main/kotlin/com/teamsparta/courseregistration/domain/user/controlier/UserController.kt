@@ -17,6 +17,12 @@ import org.springframework.web.bind.annotation.RestController
 // 튜터는dtos-컨트롤러 먼저 작성합.
 class UserController( private val userService: UserService) { //유저서비스 주입함.
 
+    @PostMapping("/login")
+    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<LoginResponse> {
+        return  ResponseEntity
+            .status(HttpStatus.OK)
+            .body(userService.login(loginRequest))
+    }
     @PostMapping//로그인 구현
     fun signup(@RequestBody signUpRequest: SignUpRequest) : ResponseEntity<UserResponse> {
         return ResponseEntity

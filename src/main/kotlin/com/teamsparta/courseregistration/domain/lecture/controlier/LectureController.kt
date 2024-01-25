@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController
 class LectureController ( //콜스 서비스 주입받음. 반환함.
     private val courseService: CourseService
 ){
-
+     @PreAuthorize("hasRole('TUTOR') or hasRole('STUDENT')")
      @GetMapping
      fun getLectureList(@PathVariable courseId: Long): ResponseEntity<List<LectureResponse>> {
          return ResponseEntity
              .status(HttpStatus.OK)
              .body(courseService.getLectureList(courseId))
      }
-
+    @PreAuthorize("hasRole('TUTOR') or hasRole('STUDENT')")
     @GetMapping("/{lectureId}")
      fun getLecture(@PathVariable courseId: Long, @PathVariable lectureId: Long): ResponseEntity<LectureResponse>
      //()파라미터 안에 왜 @PathVariable이 두번 들어간 이유: 테이블 연관관계따라서 id를 두개 받은걸까?
@@ -37,7 +37,7 @@ class LectureController ( //콜스 서비스 주입받음. 반환함.
             .status(HttpStatus.OK)
             .body(courseService.getLecture(courseId, lectureId))
      }
-
+    @PreAuthorize("hasRole('TUTOR')")
     @PostMapping
     fun addLecture(
         @PathVariable courseId: Long,
@@ -48,7 +48,7 @@ class LectureController ( //콜스 서비스 주입받음. 반환함.
              .status(HttpStatus.OK)
              .body(courseService.addLecture(courseId, addLectureRequest))
     }
-
+    @PreAuthorize("hasRole('TUTOR')")
     @PutMapping ("/{lecturId}")
     fun updateLecture(
         @PathVariable courseId: Long,
@@ -59,7 +59,7 @@ class LectureController ( //콜스 서비스 주입받음. 반환함.
             .status(HttpStatus.OK)
             .body(courseService.updateLecture(courseId, lectureId, UpdateLectureRequest))
     }
-
+    @PreAuthorize("hasRole('TUTOR')")
     @DeleteMapping("/{lectureId}")
     fun removeLecture(
         @PathVariable courseId: Long,

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 class CourseController(//생성자 주입, 콜스 서비스 주입, 받음.
     private val courseService: CourseService
 ) {
-
+    @PreAuthorize("hasRole('TUTOR') or hasRole('STUDENT')")
 
     @GetMapping()// 여러건을 가져올때 <List<CourseResponse>>를 가져오는데, ResponseEntity로 감싸서 가져온다.
     fun getCourseList(): ResponseEntity<List<CourseResponse>> {
@@ -33,14 +33,14 @@ class CourseController(//생성자 주입, 콜스 서비스 주입, 받음.
             .status(HttpStatus.OK)
             .body(courseService.getAllCourseList())
     }
-
+    @PreAuthorize("hasRole('TUTOR') or hasRole('STUDENT')")
     @GetMapping("/{courseId}") //@PathVariable: URI 경로 변수 값을 매핑하는데 사용됩. 위의 주소값과 일치시킨다. 단건조회.
     fun getCourse(@PathVariable courseId: Long) :ResponseEntity<CourseResponse>{
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(courseService.getCourseById(courseId))
     }
-
+    @PreAuthorize("hasRole('TUTOR')")
     @PostMapping //@RequestBody: 요청 dto를 표기할때 사용합니다. 클라이언트로 요청받은 Json을 객체로 매핑해줍니다.
     fun createCourse(@RequestBody createCourseRequest: CreateCourseRequest): ResponseEntity <CourseResponse>
     //응답을 CourseResponse을 주는데,ResponseEntity로 감싸서 준다
@@ -52,7 +52,7 @@ class CourseController(//생성자 주입, 콜스 서비스 주입, 받음.
 //        return ResponseEntity.status(HttpStatus.CREATED).body(----)
         //@RequestParam: HTTP 요청 파라미터 값을 매핑하는데 사용합니다.
     }
-
+    @PreAuthorize("hasRole('TUTOR')")
     @PutMapping("/{courseId}")
     fun updateCourse(@PathVariable courseId: Long, @RequestBody updateCourseRequest: UpdateCourseRequest)
     : ResponseEntity<CourseResponse>{
@@ -60,7 +60,7 @@ class CourseController(//생성자 주입, 콜스 서비스 주입, 받음.
             .status(HttpStatus.OK)
             .body(courseService.updateCourse(courseId, updateCourseRequest))
     }
-
+    @PreAuthorize("hasRole('TUTOR')")
     @DeleteMapping("/{courseId}")
     fun deleteCourse(@PathVariable courseId: Long): ResponseEntity<Unit>{
         courseService.deleteCourse(courseId)

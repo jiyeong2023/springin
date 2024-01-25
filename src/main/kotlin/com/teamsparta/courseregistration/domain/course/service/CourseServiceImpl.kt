@@ -35,18 +35,37 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
     private val userRepository: UserRepository,
 ) //
     : CourseService {
-    override fun getAllCourseList(): List<CourseResponse> {
+    override fun getPaginatedCourseList(pageable: Pageable, status: String?): Page<CourseResponse> {
+        val courseStatus = when (status) {
+            "OPEN" -> CourseStatus.OPEN
+            "CLOSED" -> CourseStatus.CLOSED
+            null -> null
+            else -> throw IllegalArgumentException("The status is invalid");
+        }
+
+        return courseRepository.findByPageableAndStatus(pageable, courseStatus).map { it.toResponse() }
+    }
+
+    override fun searchCourseListByTitle(title: String): List<CourseResponse> {
+        return courseRepository.searchCourseListByTitle(title).map { it.toResponse() }
+    }
+
+        override fun getAllCourseList(): List<CourseResponse> {
+            // TODO: DB에서 모든 Course 목록을 조회하여 CourseResponse 목록으로 변환 후 반환
         return courseRepository.findAll().map { it.toResponse() }
     } //콜스 리스트 가져오는 함수: 파인더올이 있다. 콜스 전체를 가져오는 거기때문에 파인더올로 가져오고, 맵이라는 함수를 통해서, 각각의 투리스폰스를
     //활용해서 최종적으로 리스트의 콜스리스폰트로 변환한다. 그렇게 보시면 될 것 같고,
 
     override fun getCourseById(courseId: Long): CourseResponse {
+        // TODO: 만약 courseId에 해당하는 Course가 없다면 throw ModelNotFoundException
+        // TODO: DB에서 ID기반으로 Course 가져와서 CourseResponse로 변환 후 반환
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
         return course.toResponse()
     }
 
     @Transactional
     override fun createCourse(request: CreateCourseRequest): CourseResponse {
+        // TODO: request를 Course로 변환 후 DB에 저장
         return courseRepository.save(
             Course(
                 title = request.title,
@@ -57,8 +76,13 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
     }//크리에이콜스도 세이브 하면 콜스가 저장이 되고, 저장이 되면 리턴으로 콜스 자체에 내용이 담겨서 나온다고 볼 수 있어요. 리턴하고 세이브. 콜스 내용후, 투리스폰스로
     //변환을 해주면 됩니다.
 
+    override fun searchCourseListByTitle(title: String): List<CourseResponse> {
+        return courseRepository.searchCourseListByTitle(title).map { it.toResponse() }
+    }
     @Transactional
     override fun updateCourse(courseId: Long, request: UpdateCourseRequest): CourseResponse {
+        // TODO: 만약 courseId에 해당하는 Course가 없다면 throw ModelNotFoundException
+        // TODO: DB에서 courseId에 해당하는 Course를 가져와서 request기반으로 업데이트 후 DB에 저장, 결과를 CourseResponse로 변환 후 반환
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
         val (title, description) = request
 
@@ -70,12 +94,16 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
 
     @Transactional
     override fun deleteCourse(courseId: Long) {
+        // TODO: 만약 courseId에 해당하는 Course가 없다면 throw ModelNotFoundException
+        // TODO :DB에서 courseId에 해당하는 Course를 삭제, 연관된 CourseApplication과 Lecture도 모두 삭제
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
         courseRepository.delete(course)
     }
 
     @Transactional //트랙색션 어노테이션: 성공하지 못했을시 롤백을 한다. 성공시 앱종료되도 DB에 저장한다.
     override fun addLecture(courseId: Long, request: AddLectureRequest): LectureResponse {
+        // TODO: 만약 courseId에 해당하는 Course가 없다면 throw ModelNotFoundException
+        // TODO: DB에서 courseId에 해당하는 Course를 가져와서 Lecture를 추가 후 DB에 저장, 결과를을 LectureResponse로 변환 후 반환
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
 
         val lecture = Lecture(
@@ -91,6 +119,8 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
     }
 //
     override fun getLecture(courseId: Long, lectureId: Long): LectureResponse {//콜스아이디와 렉쳐아이디 기반으로 다 가져오고,
+    // TODO: 만약 courseId, lectureId에 해당하는 Lecture가 없다면 throw ModelNotFoundException
+    // TODO: DB에서 courseId, lectureId에 해당하는 Lecture를 가져와서 LectureResponse로 변환 후 반환
         val lecture = lectureRepository.findByCourseIdAndId(courseId, lectureId)
             ?: throw ModelNotFoundException("Lecture", lectureId)//해당코스아이디 렉쳐아아디 조회하기에 렉쳐를 가져왔습니다??
 
@@ -98,6 +128,9 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
     }
 
     override fun getLectureList(courseId: Long): List<LectureResponse> {
+        // TODO: 만약 courseId에 해당하는 Course가 없다면 throw ModelNotFoundException
+        // TODO: DB에서 courseId에 해당하는 Course목록을 가져오고, 하위 lecture들을 가져온 다음, LectureResopnse로 변환해서 반환
+
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
         return course.lectures.map { it.toResponse() }
     }//코스아이디 렉쳐아이디 기반으로 다 가져와서 파인드로 다 찾아 비교를 합니다.
@@ -108,6 +141,9 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
         lectureId: Long,
         request: UpdateLectureRequest
     ): LectureResponse {
+        // TODO: 만약 courseId, lectureId에 해당하는 Lecture가 없다면 throw ModelNotFoundException
+        /* TODO: DB에서 courseId, lectureId에 해당하는 Lecture를 가져와서
+            request로 업데이트 후 DB에 저장, 결과를을 LectureResponse로 변환 후 반환 */
         val lecture = lectureRepository.findByCourseIdAndId(courseId, lectureId)//코스아이디와 렉쳐아이디 기반으로 조회한다음에
             ?: throw ModelNotFoundException("Lecture", lectureId) //업데이트를 합니다??
 
@@ -120,18 +156,23 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
 
     @Transactional
     override fun removeLecture(courseId: Long, lectureId: Long) {
+        // TODO: 만약 courseId에 해당하는 Course가 없다면 throw ModelNotFoundException
+        // TODO: DB에서 courseId, lectureId에 해당하는 Lecture를 가져오고, 삭제
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
         val lecture = lectureRepository.findByIdOrNull(lectureId)
             ?: throw ModelNotFoundException("Lecture", lectureId)
 
         course.removeLecture(lecture)
-
-        // Lecture에 영속성을 전파
+       // Lecture에 영속성을 전파
+         //  courseRepository.save(course)
         courseRepository.save(course)//렉쳐를 콜스 어그리먼트에서 관리한다고 보여주기위해??
     }
 
     @Transactional
     override fun applyCourse(courseId: Long, request: ApplyCourseRequest): CourseApplicationResponse {
+        // TODO: 만약 courseId에 해당하는 Course가 없다면 throw ModelNotFoundException
+        // TODO: 만약 course가 이미 마감됐다면, throw IllegalStateException
+        // TODO: 이미 신청했다면, throw IllegalStateException
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
         val user = userRepository.findByIdOrNull(request.userId)
             ?: throw ModelNotFoundException("User", request.userId)
@@ -158,6 +199,8 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
     }
 
     override fun getCourseApplication(courseId: Long, applicationId: Long): CourseApplicationResponse {
+        // TODO: 만약 courseId, applicationId에 해당하는 CourseApplication이 없다면 throw ModelNotFoundException
+        // TODO: DB에서 courseId, applicationId에 해당하는 CourseApplication을 가져와서 CourseApplicationResponse로 변환 후 반환
         val application = courseApplicationRepository.findByCourseIdAndId(courseId, applicationId)
             ?: throw ModelNotFoundException("CourseApplication", applicationId)
 
@@ -165,6 +208,9 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
     }
 
     override fun getCourseApplicationList(courseId: Long): List<CourseApplicationResponse> {
+        // TODO: 만약 courseId에 해당하는 Course가 없다면 throw ModelNotFoundException
+        // TODO: DB에서 courseId에 해당하는 Course를 가져오고, 하위 courseApplication들을 CourseApplicationResponse로 변환 후 반환
+
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
 
         return course.courseApplications.map { it.toResponse() }
@@ -176,6 +222,11 @@ class CourseServiceImpl( // 트랙센션- c,u,d에 어노테이션을 걸어준�
         applicationId: Long,
         request: UpdateApplicationStatusRequest
     ): CourseApplicationResponse {
+    // TODO: 만약 courseId, applicationId에 해당하는 CourseApplication이 없다면 throw ModelNotFoundException
+    // TODO: 만약 status가 이미 변경된 상태면 throw IllegalStateException
+    // TODO: Course의 status가 CLOSED상태 일시 throw IllegalStateException
+    // TODO: 승인을 하는 케이스일 경우, course의 numApplicants와 maxApplicants가 동일하면, course의 상태를 CLOSED로 변경
+    // TODO: DB에서 courseApplication을 가져오고, status를 request로 업데이트 후 DB에 저장, 결과를 CourseApplicationResponse로 변환 후 반환
         val course = courseRepository.findByIdOrNull(courseId) ?: throw ModelNotFoundException("Course", courseId)
         val application = courseApplicationRepository.findByCourseIdAndId(courseId, applicationId)
             ?: throw ModelNotFoundException("CourseApplication", applicationId)

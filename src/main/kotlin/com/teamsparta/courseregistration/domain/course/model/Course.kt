@@ -78,6 +78,7 @@ fun Course.toResponse(): CourseResponse {
         description = description,
         status = status.name,
         maxApplicants = maxApplicants,
-        numApplicants = numApplicants
+        numApplicants = numApplicants,
+        lectures = lectures.map { it.toResponse() }
     )
 }

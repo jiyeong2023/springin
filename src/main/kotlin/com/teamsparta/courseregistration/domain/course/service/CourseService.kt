@@ -12,6 +12,10 @@ import com.teamsparta.courseregistration.domain.lecture.dto.UpdateLectureRequest
 
 interface CourseService { //
 
+    fun getPaginatedCourseList(pageable: Pageable, status: String?): Page<CourseResponse>
+
+    fun searchCourseListByTitle(title: String): List<CourseResponse>
+
     fun getAllCourseList(): List<CourseResponse>
 
     fun getCourseById(courseId: Long): CourseResponse
